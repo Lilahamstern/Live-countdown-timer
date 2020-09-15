@@ -13,8 +13,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/vue-fontawesome": "^2.0.0",
     "core-js": "^3.6.5",
+    "date-fns": "^2.16.1",
     "global": "^4.4.0",
-    "npx": "^10.2.2",
     "tailwindcss": "^1.8.9",
     "vue": "^2.6.12"
   },

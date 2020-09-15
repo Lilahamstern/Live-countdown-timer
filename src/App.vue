@@ -1,69 +1,76 @@
 <template>
-  <div class="flex flex-auto bg-gray-700 w-full h-screen items-center">
-    <div class="w-full">
-      <div class="flex w-full justify-center">
-        <VueCountdown
-          class="text-6xl text-white"
-          :time="time"
-          ref="countdown"
-          :auto-start="false"
-          :emit-events="true"
-          @end="ended"
-          :transform="transform"
-        >
-          <template slot-scope="props"
-            >{{ props.hours }}:{{ props.minutes }}:{{ props.seconds }}</template
-          >
-        </VueCountdown>
-      </div>
-      <div class="flex w-full justify-center">
-        <input
-          v-model="seconds"
-          type="number"
-          placeholder="Seconds"
-          class="p-1 rounded-md bg-gray-800 border-white border pl-2 outline-none text-white"
-          :class="[live ? 'opacity-50 cursor-not-allowed' : '']"
-          :disabled="live"
-          min="10"
-        />
-      </div>
-      <div class="flex w-1/2 justify-between mx-auto mt-10">
-        <button
-          @click="startTimer"
-          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          :class="[live ? 'opacity-50 cursor-not-allowed' : '']"
-          :disabled="live"
-        >
-          Start
-          <!-- {{ !live ? "Start" : "Stop" }} -->
-        </button>
-
-        <button
-          @click="pauseTimer"
-          class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-          :class="[!live ? 'opacity-50 cursor-not-allowed' : '']"
-          :disabled="!live"
-        >
-          Pause
-        </button>
-
-        <button
-          @click="resetTimer"
-          class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Reset
-        </button>
-      </div>
+  <div class="bg-gray-700  h-screen items-center">
+    <div>
+      <p class="text-center text-white text-6xl pt-10 mb-48">{{ clock }}</p>
     </div>
-    <div class="w-full flex flex-col justify-center items-center">
-      <div class="flex text-center mb-8 text-6xl">
-        <p v-if="live" class="text-red-700">Live</p>
-        <p v-else-if="!live && paused" class="text-orange-500">Paused</p>
-        <p v-else class="text-green-500">Offline</p>
+    <div class="flex w-full items-center">
+      <div class="w-full">
+        <div class="flex w-full justify-center items-center">
+          <VueCountdown
+            class="text-6xl text-white"
+            :time="time"
+            ref="countdown"
+            :auto-start="false"
+            :emit-events="true"
+            @end="ended"
+            :transform="transform"
+          >
+            <template slot-scope="props"
+              >{{ props.hours }}:{{ props.minutes }}:{{
+                props.seconds
+              }}</template
+            >
+          </VueCountdown>
+        </div>
+        <div class="flex w-full justify-center">
+          <input
+            v-model="seconds"
+            type="number"
+            placeholder="Seconds"
+            class="p-1 rounded-md bg-gray-800 border-white border pl-2 outline-none text-white"
+            :class="[live ? 'opacity-50 cursor-not-allowed' : '']"
+            :disabled="live"
+            min="10"
+          />
+        </div>
+        <div class="flex w-1/2 justify-between mx-auto mt-10">
+          <button
+            @click="startTimer"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            :class="[live ? 'opacity-50 cursor-not-allowed' : '']"
+            :disabled="live"
+          >
+            Start
+            <!-- {{ !live ? "Start" : "Stop" }} -->
+          </button>
+
+          <button
+            @click="pauseTimer"
+            class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+            :class="[!live ? 'opacity-50 cursor-not-allowed' : '']"
+            :disabled="!live"
+          >
+            Pause
+          </button>
+
+          <button
+            @click="resetTimer"
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Reset
+          </button>
+        </div>
       </div>
-      <div v-bind:class="statusClass" class="text-10xl ">
-        <font-awesome-icon v-if="live" icon="video" />
-        <font-awesome-icon v-if="!live || paused" icon="video-slash" />
+      <div class="w-full flex flex-col justify-center items-center h-full">
+        <div class="flex text-center mb-8 text-6xl">
+          <p v-if="live" class="text-red-700">Live</p>
+          <p v-else-if="!live && paused" class="text-orange-500">Paused</p>
+          <p v-else class="text-green-500">Offline</p>
+        </div>
+        <div v-bind:class="statusClass" class="text-10xl ">
+          <font-awesome-icon v-if="live" icon="video" />
+          <font-awesome-icon v-if="!live || paused" icon="video-slash" />
+        </div>
       </div>
     </div>
   </div>
@@ -71,6 +78,7 @@
 
 <script>
 import VueCountdown from "@chenfengyuan/vue-countdown";
+import { format } from "date-fns";
 export default {
   name: "App",
   components: {
@@ -82,6 +90,7 @@ export default {
       live: false,
       paused: false,
       seconds: null,
+      clock: format(new Date(), "HH:mm:ss"),
     };
   },
 
@@ -115,12 +124,15 @@ export default {
 
       return props;
     },
+    updateTime() {
+      this.clock = format(new Date(), "HH:mm:ss");
+    },
   },
 
   computed: {
     time: function() {
       if (!this.seconds) {
-        return 600 * 1000;
+        return 10 * 1000;
       }
       return this.seconds * 1000;
     },
@@ -131,6 +143,10 @@ export default {
         "text-red-500": this.live,
       };
     },
+  },
+
+  mounted: function() {
+    setInterval(this.updateTime, 1000);
   },
 };
 </script>
