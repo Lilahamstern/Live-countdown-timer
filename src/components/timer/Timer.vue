@@ -30,7 +30,7 @@
     </div>
     <div class="flex w-1/2 justify-between mx-auto mt-10">
       <Button
-        @click.native="startTimer"
+        @click.native="start"
         classObj="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         :disable="live"
         text="Start"

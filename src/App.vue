@@ -1,7 +1,12 @@
 <template>
-  <div class="bg-gray-700 h-screen items-center">
-    <div>
-      <p class="text-center text-white text-6xl pt-10 mb-48">{{ clock }}</p>
+  <div class="bg-gray-700 h-screen">
+    <div class="flex justify-around items-center mb-20">
+      <div class="flex-1">
+        <p class="text-center text-white text-6xl pt-10">{{ clock }}</p>
+      </div>
+      <div class="flex-1">
+        <Stop-Watch />
+      </div>
     </div>
     <div class="flex w-full items-center">
       <Timer v-on:change-live-status="onLiveUpdate" />
@@ -12,13 +17,16 @@
 
 <script>
 import Timer from "@/components/timer/Timer";
+import StopWatch from "@/components/timer/StopWatch";
 import Status from "@/components/status/Status";
+
 import { format } from "date-fns";
 export default {
   name: "App",
   components: {
     Timer,
     Status,
+    StopWatch,
   },
 
   data() {
